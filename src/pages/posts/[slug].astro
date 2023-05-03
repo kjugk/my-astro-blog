@@ -1,5 +1,5 @@
 ---
-import { marked } from "marked";
+import { marked } from "../../lib/marked";
 import { BlogPost, contentfulClient } from "../../lib/contentful";
 import Layout from "../../layouts/Layout.astro";
 
@@ -10,6 +10,7 @@ export async function getStaticPaths() {
 
   const pages = entries.items.map((item) => {
     const { slug, title, content, date, description } = item.fields;
+
     return {
       params: { slug },
       props: {
