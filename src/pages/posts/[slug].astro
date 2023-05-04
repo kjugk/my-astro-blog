@@ -1,7 +1,16 @@
 ---
 import { marked } from "../../lib/marked";
-import { BlogPost, contentfulClient } from "../../lib/contentful";
+import { Tag, BlogPost, contentfulClient } from "../../lib/contentful";
 import Layout from "../../layouts/Layout.astro";
+import type { Entry } from "contentful";
+
+interface Props {
+  title: string;
+  content: string;
+  date: string;
+  description: string;
+  tags: string[];
+}
 
 export async function getStaticPaths() {
   const entries = await contentfulClient.getEntries<BlogPost>({
@@ -9,7 +18,7 @@ export async function getStaticPaths() {
   });
 
   const pages = entries.items.map((item) => {
-    const { slug, title, content, date, description } = item.fields;
+    const { slug, title, content, date, description, tags = [] } = item.fields;
 
     return {
       params: { slug },
@@ -18,6 +27,7 @@ export async function getStaticPaths() {
         content: marked.parse(content),
         date: new Date(date).toLocaleDateString(),
         description,
+        tags: tags.map((tag) => (tag as Entry<Tag>).fields.name),
       },
     };
   });
@@ -25,11 +35,12 @@ export async function getStaticPaths() {
   return pages;
 }
 
-const { content, title, date, description } = Astro.props;
+const { content, title, date, description, tags } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
   <h1>{title}</h1>
+  {tags.map((tag) => <span>{tag}</span>)}
   <time>{date}</time>
   <article class="prose lg:prose-xl" set:html={content} />
 </Layout>
