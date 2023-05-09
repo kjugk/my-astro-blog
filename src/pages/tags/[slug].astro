@@ -1,0 +1,58 @@
+---
+import { Tag, BlogPost, contentfulClient } from "../../lib/contentful";
+import Layout from "../../layouts/Layout.astro";
+import type { Entry } from "contentful";
+
+// TODO: 型の共通化
+interface Props {
+  posts: {
+    title: string;
+    content: string;
+    date: string;
+    description: string;
+    tags: string[];
+  }[];
+  tag: {
+    name: string;
+    slug: string;
+  };
+}
+
+export async function getStaticPaths() {
+  // NOTE: memory で計算してもOK
+  const allTags = await contentfulClient.getEntries<Tag>({
+    content_type: "tag",
+  });
+
+  // TODO: 新しい順にソートする
+  const allEntries = await contentfulClient.getEntries<BlogPost>({
+    content_type: "blogPost",
+  });
+
+  const pages = allTags.items.map((tag) => {
+    const { slug } = tag.fields;
+    const filteredEntries = allEntries.items.filter((entry) => {
+      const tags = (entry.fields.tags as Entry<Tag>[]) ?? [];
+      return tags.findIndex((tag) => tag.fields.slug === slug) !== -1;
+    });
+
+    return {
+      params: { slug },
+      props: {
+        tag: tag.fields,
+        posts: filteredEntries,
+      },
+    };
+  });
+
+  return pages;
+}
+
+const { posts, tag } = Astro.props;
+---
+
+<Layout title={tag.name} description={`${tag.name}の記事一覧`}>
+  <h1>{tag.name}</h1>
+  <p>{posts.length}</p>
+  <!-- TODO: List の共通化 -->
+</Layout>
