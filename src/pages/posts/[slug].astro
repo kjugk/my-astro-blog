@@ -42,5 +42,5 @@ const { content, title, date, description, tags } = Astro.props;
   <h1>{title}</h1>
   {tags.map((tag) => <span>{tag}</span>)}
   <time>{date}</time>
-  <article class="prose lg:prose-xl" set:html={content} />
+  <article class="prose" set:html={content} />
 </Layout>
