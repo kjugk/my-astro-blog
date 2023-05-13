@@ -8,7 +8,7 @@ export const contentfulClient = Contentful.createClient({
   host: import.meta.env.DEV ? "preview.contentful.com" : "cdn.contentful.com",
 });
 
-export type Tag = {
+export type ContentfulTag = {
   contentTypeId: "tag";
   fields: {
     name: Contentful.EntryFieldTypes.Text;
@@ -25,7 +25,7 @@ export type BlogPost = {
     content: Contentful.EntryFieldTypes.Text;
     slug: Contentful.EntryFieldTypes.Text;
     tags?: Contentful.EntryFieldTypes.Array<
-      Contentful.EntryFieldTypes.EntryLink<Tag>
+      Contentful.EntryFieldTypes.EntryLink<ContentfulTag>
     >;
   };
 };

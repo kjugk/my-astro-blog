@@ -1,8 +1,13 @@
 ---
 import { marked } from "../../lib/marked";
-import { Tag, BlogPost, contentfulClient } from "../../lib/contentful";
+import {
+  ContentfulTag,
+  BlogPost,
+  contentfulClient,
+} from "../../lib/contentful";
 import Layout from "../../layouts/Layout.astro";
 import Container from "../../components/Container.astro";
+import Tag from "../../components/Tag.astro";
 import type { Entry } from "contentful";
 import "../../styles/night-owl.css";
 
@@ -11,7 +16,7 @@ interface Props {
   content: string;
   date: string;
   description: string;
-  tags: string[];
+  tags: ContentfulTag["fields"][];
 }
 
 export async function getStaticPaths() {
@@ -29,7 +34,7 @@ export async function getStaticPaths() {
         content: marked.parse(content),
         date: new Date(date).toLocaleDateString(),
         description,
-        tags: tags.map((tag) => (tag as Entry<Tag>).fields.name),
+        tags: tags.map((tag) => (tag as Entry<ContentfulTag>).fields),
       },
     };
   });
@@ -43,7 +48,13 @@ const { content, title, date, description, tags } = Astro.props;
 <Layout title={title} description={description}>
   <Container>
     <h1>{title}</h1>
-    {tags.map((tag) => <span>{tag}</span>)}
+    {
+      tags.map((tag) => (
+        <Tag>
+          <a href={`/my-astro-blog/tags/${tag.slug}`}>{tag.name}</a>
+        </Tag>
+      ))
+    }
     <time>{date}</time>
     <article class="prose" set:html={content} />
   </Container>
