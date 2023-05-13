@@ -1,12 +1,13 @@
 import { marked } from "marked";
 import { markedHighlight } from "marked-highlight";
-import Prism from "prismjs";
+import hljs from "highlight.js";
 
 marked.use(
   markedHighlight({
-    langPrefix: "language-",
+    langPrefix: "hljs language-",
     highlight: (code, lang) => {
-      return Prism.highlight(code, Prism.languages[lang], lang);
+      const language = hljs.getLanguage(lang) ? lang : "plaintext";
+      return hljs.highlight(code, { language }).value;
     },
   })
 );
