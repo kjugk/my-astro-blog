@@ -2,6 +2,7 @@
 import { marked } from "../../lib/marked";
 import { Tag, BlogPost, contentfulClient } from "../../lib/contentful";
 import Layout from "../../layouts/Layout.astro";
+import Container from "../../components/Container.astro";
 import type { Entry } from "contentful";
 import "../../styles/night-owl.css";
 
@@ -40,8 +41,10 @@ const { content, title, date, description, tags } = Astro.props;
 ---
 
 <Layout title={title} description={description}>
-  <h1>{title}</h1>
-  {tags.map((tag) => <span>{tag}</span>)}
-  <time>{date}</time>
-  <article class="prose" set:html={content} />
+  <Container>
+    <h1>{title}</h1>
+    {tags.map((tag) => <span>{tag}</span>)}
+    <time>{date}</time>
+    <article class="prose" set:html={content} />
+  </Container>
 </Layout>

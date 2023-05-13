@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Container from "../components/Container.astro";
 import { contentfulClient } from "../lib/contentful";
 import type { BlogPost } from "../lib/contentful";
 
@@ -21,16 +22,18 @@ const posts = entries.items.map((item) => {
 
 <Layout title="Welcome to Astro.">
   <main>
-    <ul>
-      {
-        posts.map((post) => (
-          <li>
-            <a href={`/my-astro-blog/posts/${post.slug}`}>{post.title}</a>
-            <p>{post.description}</p>
-            <p>{post.date}</p>
-          </li>
-        ))
-      }
-    </ul>
+    <Container>
+      <ul>
+        {
+          posts.map((post) => (
+            <li>
+              <a href={`/my-astro-blog/posts/${post.slug}`}>{post.title}</a>
+              <p>{post.description}</p>
+              <p>{post.date}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
   </main>
 </Layout>
